@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Spring Boot service
+  transactional-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transactional-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+
+  # define Kafka details
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
+      - KAFKA_LISTENER_INTERNAL=PLAINTEXT://kafka:9093
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_NAME_INTERNAL=INTERNAL
+      - KAFKA_LISTENER_NAME_EXTERNAL=EXTERNAL
+    ports:
+      - "9092:9092"
+    networks:
+      - app-network
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

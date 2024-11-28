@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: transaction-tracking-service
+  jpa:
+    hibernate:
+      ddl-auto: create #to be changed. This is for demo only
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: ta
+    url: jdbc:postgresql://localhost:5432/banks
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: "philip"
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: transaction-tracking-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
